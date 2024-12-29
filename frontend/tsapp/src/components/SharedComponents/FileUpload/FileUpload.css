@@ -1,0 +1,9 @@
+.filepond--root {
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+.filepond--drop-label {
+  color: #6200ea;
+  font-size: 14px;
+}

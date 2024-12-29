@@ -1,0 +1,23 @@
+.auth-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .error-message {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  .toggle-text {
+    margin-top: 20px;
+  }
+  
+  .toggle-link {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
