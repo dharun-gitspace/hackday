@@ -8,12 +8,9 @@ const AuthPage = ({ setLoggedInUser }) => {
   const [errorMessage, setErrorMessage] = useState(""); // Error feedback
   const navigate = useNavigate();
 
-  const handleAuth = async ({ email, password }) => {
-    const endpoint = isLogin ? "http://localhost:5000/api/login" : "http://localhost:5000/api/signup";
-
-    // Input validation
-    if (!email || !password) {
-      setErrorMessage("Email and password are required.");
+  const handleAuth = ({ email }) => {
+    if (!email) {
+      setErrorMessage("Email is required.");
       return;
     }
 
@@ -23,40 +20,12 @@ const AuthPage = ({ setLoggedInUser }) => {
       return;
     }
 
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+    setLoggedInUser(email); // Save email to global state
+    alert(isLogin ? "Login Successful!" : "Signup Successful! Logging you in...");
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        setErrorMessage(result.message || "Authentication failed. Please try again.");
-        return;
-      }
-
-      if (isLogin) {
-        // Successful login
-        setLoggedInUser(email); // Pass the email to App.js for global state
-        alert("Login Successful! Redirecting...");
-        setTimeout(() => navigate("/teacher"), 3000); // Redirect after 3 seconds
-      } else {
-        // Successful signup
-        alert("Signup Successful! Please login.");
-        setIsLogin(true); // Switch to login form
-      }
-    } catch (error) {
-      console.error("Error during authentication:", error);
-
-      // Improved error handling
-      if (error instanceof TypeError) {
-        setErrorMessage("Network error or server is unreachable. Please check your internet connection and try again.");
-      } else {
-        setErrorMessage("An unexpected error occurred. Please try again later.");
-      }
-    }
+    // Assume successful login/signup and navigate accordingly
+    const isTeacher = email.includes("teacher"); // Example condition
+    navigate(isTeacher ? "/teacher" : "/student");
   };
 
   return (

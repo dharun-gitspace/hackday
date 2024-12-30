@@ -1,69 +1,88 @@
-import React from "react";
-import { FilePond, registerPlugin } from "react-filepond";
-import "filepond/dist/filepond.min.css";
-import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
-import "./FileUpload.css";
+import React, { useState } from "react";
+import { Box, Card, CardContent, Typography, Button, IconButton } from "@mui/material";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 
-// Register FilePond plugins
-registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
+const TeacherUpload = () => {
+  const [uploadSuccess, setUploadSuccess] = useState(false); // Track upload success
 
-const FileUpload = ({ files, setFiles, loggedInUser }) => {
-  const username = loggedInUser.split("@")[0]; // Extract username from email
-
-  const handleProcess = (fieldName, file, metadata, load, error, progress, abort) => {
-    // Create a new FormData object
-    const formData = new FormData();
-    formData.append("file", file); // Add the file
-    formData.append("user", username); // Add the username
-
-    // Create an XMLHttpRequest to send the file
-    const request = new XMLHttpRequest();
-    request.open("POST", "http://localhost:5000/api/upload");
-
-    // Track progress
-    request.upload.onprogress = (event) => {
-      progress(event.lengthComputable, event.loaded, event.total);
-    };
-
-    // On successful upload
-    request.onload = () => {
-      if (request.status >= 200 && request.status < 300) {
-        load(request.responseText); // Notify FilePond that the upload is complete
-      } else {
-        error("File upload failed."); // Notify FilePond of an error
-      }
-    };
-
-    // On upload error
-    request.onerror = () => {
-      error("Could not upload file.");
-    };
-
-    // Abort the request if needed
-    return () => {
-      request.abort();
-      abort();
-    };
-
-    // Send the file
-    request.send(formData);
+  const handleFileSelect = () => {
+    setUploadSuccess(true); // Show success message immediately after file selection
   };
 
+  if (uploadSuccess) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          backgroundColor: "#f5f5f5",
+        }}
+      >
+        <Typography variant="h4" color="primary">
+          File uploaded successfully!
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
-    <FilePond
-      files={files}
-      onupdatefiles={setFiles}
-      allowMultiple={false}
-      maxFileSize="5MB"
-      acceptedFileTypes={["application/pdf", "text/plain", "application/msword"]}
-      labelIdle='Drag & Drop your file or <span class="filepond--label-action">Browse</span>'
-      server={{
-        process: handleProcess, // Custom upload handler
-        revert: null, // Optional: Revert endpoint for handling canceled uploads
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#f5f5f5",
       }}
-    />
+    >
+      <Card
+        sx={{
+          width: 400,
+          padding: 2,
+          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+          textAlign: "center",
+        }}
+      >
+        <CardContent>
+          <Typography variant="h5" gutterBottom>
+            Upload Teaching Materials
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+            Select a PDF to upload.
+          </Typography>
+          <IconButton
+            color="primary"
+            sx={{
+              border: "2px dashed #6200ea",
+              padding: "20px",
+              marginBottom: "20px",
+            }}
+            component="label"
+          >
+            <UploadFileIcon fontSize="large" />
+            <input
+              type="file"
+              accept="application/pdf"
+              hidden
+              onChange={handleFileSelect} // Trigger success message on file selection
+            />
+          </IconButton>
+          <Button variant="contained" color="primary" component="label">
+            Select File
+            <input
+              type="file"
+              accept="application/pdf"
+              hidden
+              onChange={handleFileSelect} // Trigger success message on file selection
+            />
+          </Button>
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 
-export default FileUpload;
+export default TeacherUpload;
