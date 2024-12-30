@@ -1,0 +1,26 @@
+pdf_rag_task:
+  description: >
+    Conduct a thorough research about {topic}
+    Make sure you find any interesting and relevant information given
+    the current year is 2024.
+  expected_output: >
+    A list with 10 bullet points of the most relevant information about {topic}
+  agent: researcher
+
+pdf_summary_tast:
+description: "Generate multiple-choice questions (MCQs) from a given PDF content. The MCQs should include a question, four choices, the correct answer, and an optional placeholder for the student's answer."
+expected_output: >
+    A JSON array of MCQs where each MCQ has the following structure:
+    - "question": A concise question derived from the text.
+    - "choices": An array of four plausible options, one of which is the correct answer.
+    - "correct_answer": The correct answer to the question.
+    - "student_answer": A placeholder for the student's answer, initially an empty string.
+example_output:
+  - question: "What is the main idea of: Why is the sky blue?"
+    choices:
+      - "It reflects the ocean"
+      - "Correct answer for 'Why is the sky blue?'"
+      - "It's a natural phenomenon"
+      - "Due to atmospheric scattering"
+    correct_answer: "Correct answer for 'Why is the sky blue?'"
+    student_answer: ""
